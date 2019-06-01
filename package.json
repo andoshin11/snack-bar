@@ -1,0 +1,40 @@
+{
+  "name": "snack-bar",
+  "version": "0.0.1",
+  "description": "",
+  "bin": {
+    "snack-bar": "./bin/snack-bar.js"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andoshin11/snack-bar.git"
+  },
+  "author": "andoshin11 <shinglish11@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/andoshin11/snack-bar/issues"
+  },
+  "homepage": "https://github.com/andoshin11/snack-bar#readme",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "tsc"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/node": "^11.11.3",
+    "testcafe": "^1.1.4",
+    "typescript": "~3.5.1"
+  },
+  "dependencies": {
+    "acorn": "^6.1.1",
+    "commander": "^2.20.0",
+    "enquirer": "^2.3.0",
+    "glob": "^7.1.4"
+  },
+  "peerDependencies": {
+    "testcafe": "^1.1.4"
+  }
+}
