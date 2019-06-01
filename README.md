@@ -12,6 +12,7 @@ When you run `snack-bar` command, it automatically detects the test files and ta
 
 Once it completes scanning your test files, you can chose ones you wish to run by using the displayed multi-select input.
 
+![example](https://media.giphy.com/media/S8x1b1kNqYLeRnWOht/giphy.gif)
 
 # CLI Options
 
