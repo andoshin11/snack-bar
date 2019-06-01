@@ -1,10 +1,10 @@
-# snack-bar [![npm version](https://badge.fury.io/js/snack-bar.svg)](https://badge.fury.io/js/snack-bar)
+# snack-bar
 A command line interface to give you better controls over [TestCafe](https://devexpress.github.io/testcafe/) scenarios.
 
 # Install
 
 ```sh
-$ yarn add snack-bar
+$ yarn add @andoshin11/snack-bar
 ```
 
 # Running Test
