@@ -1,0 +1,17 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "testcafe 'chrome:emulation:device=iphone X'",
+    "dev": "../bin/snack-bar.js"
+  },
+  "dependencies": {
+    "testcafe": "^1.2.0",
+    "typescript": "^3.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.4"
+  }
+}

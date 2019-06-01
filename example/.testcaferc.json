@@ -1,0 +1,8 @@
+{
+  "browserss": [
+    "chrome:emulation:device=iphone X"
+  ],
+  "src": [
+    "test/*.test.ts"
+  ]
+}
