@@ -1,6 +1,6 @@
 {
   "name": "@andoshin11/snack-bar",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A command line interface to give you better controls over TestCafe scenarios.",
   "bin": {
     "snack-bar": "./bin/snack-bar.js"
