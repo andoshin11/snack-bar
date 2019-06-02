@@ -20,12 +20,14 @@ const receiver = async () => {
     const browsers = await selectBrowsers(configFile.browsers)
 
     const runner = await createRunner()
-    await runner
+    const result = await runner
       .src(srcFiles)
       .browsers(browsers)
       .reporter('json')
       .run()
 
+    const finishMesage = result === 0 ? '\n\u001b[32mAll green!\u001b[0m' : `\n\u001b[31m${result} test cases failed!\u001b[0m`
+    console.log(finishMesage)
     process.exit()
   } catch (e) {
     console.error(e)

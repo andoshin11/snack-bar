@@ -5,7 +5,12 @@ import { ITargets } from './types'
 
 // Create target dictionary
 export function parseTargets(src: string | string[]): ITargets {
-  let targets: ITargets = {}
+  let targets: ITargets = {
+    fixtures: {},
+    meta: {}
+  }
+
+  // TODO: Handle multi globs
   const fileNames = glob.sync(typeof src === 'object' ? src[0] : src)
 
   // Parse test names and fixture name for each files
@@ -17,14 +22,31 @@ export function parseTargets(src: string | string[]): ITargets {
     const fixtureName = parseFixture(parsed)
     if (!fixtureName) return acc
 
+    const meta = parseMeta(parsed)
     const testNames = parseTests(parsed)
 
-    acc[fixtureName] = {
-      fileName,
-      testNames
+    // Set fixture info
+    acc.fixtures = {
+      ...acc.fixtures,
+      [fixtureName]: {
+        fileName,
+        testNames
+      }
     }
+
+    //Set meta.need to be improved :(
+    for (const data of Object.entries(meta)) {
+      const [key, val] = data
+      const fixtureNames = (acc.meta[key] ? acc.meta[key][val] || [] : [])
+      fixtureNames.push(fixtureName)
+      acc.meta[key] = {
+        ...acc.meta[key],
+        [val]: fixtureNames
+      }
+    }
+
     return acc
-  }, {} as any)
+  }, targets)
 
   return targets
 }
@@ -32,39 +54,27 @@ export function parseTargets(src: string | string[]): ITargets {
 function parseFixture(parsed: any): string | null {
   const nodes = parsed['body'] || []
   const expressionStatements = getExpressionStatements(nodes)
-  const target = expressionStatements.find(node => {
+
+  const findFixture = (parent: any): string | null => {
+    if (!parent) return null
+    const callee = parent['callee'] || {}
+    const type = callee['type']
+    const name = callee['name']
+
+    if (type === 'Identifier' && name === 'fixture') {
+      const argument = (parent['arguments'] || [])[0]
+      return argument ? argument['value'] || null : null
+    }
+
+    return findFixture(callee['object'])
+  }
+
+  const target = expressionStatements.map(node => {
     const expression = node['expression'] || {}
-    const callee = expression['callee'] || {}
-    if (callee['type'] === 'Identifier' && callee['name'] === 'fixture') return true
+    return findFixture(expression)
+  }).find(Boolean)
 
-    const _object = callee['object'] || {}
-    const _callee = _object['callee'] || {}
-
-    return _callee['type'] === 'Identifier' && _callee['name'] === 'fixture'
-  })
-
-  if (!target) return null
-
-  const expression = target['expression'] || {}
-  const callee = expression['callee'] || {}
-  if (callee['type'] === 'Identifier' && callee['name'] === 'fixture') {
-    const argument = (expression['arguments'] || [])[0]
-    if (!argument) return null
-
-    return argument['value'] || null
-  }
-
-  const _object = callee['object'] || {}
-  const _callee = _object['callee'] || {}
-
-  if (_callee['type'] === 'Identifier' && _callee['name'] === 'fixture') {
-    const argument = (_object['arguments'] || [])[0]
-    if (!argument) return null
-
-    return argument['value'] || null
-  }
-
-  return null
+  return target || null
 }
 
 function parseTests(parsed: any): string[] {
@@ -82,6 +92,38 @@ function parseTests(parsed: any): string[] {
     if (!argument) return null
     return argument['value'] || null
   }).filter(Boolean)
+}
+
+function parseMeta(parsed: any): Record<string, string> {
+  const nodes = parsed['body'] || []
+  const expressionStatements = getExpressionStatements(nodes)
+  const meta: Record<string, string> = {}
+
+  const findMeta = (parent: any): void => {
+    if (!parent) return
+    const callee = parent['callee'] || {}
+    const property = callee['property'] || {}
+    const type = property['type']
+    const name = property['name']
+
+    if (type === 'Identifier' && name === 'meta') {
+      const args: any[] = parent['arguments'] || []
+      if (args.length < 2) return
+      const key = (args[0] || {})['value']
+      const val = (args[1] || {})['value']
+
+      meta[key] = val
+    }
+
+    findMeta(callee['object'])
+  }
+
+  expressionStatements.forEach(node => {
+    const expression = node['expression'] || {}
+    findMeta(expression)
+  })
+
+  return meta
 }
 
 function getExpressionStatements(nodes: any[] = []) {

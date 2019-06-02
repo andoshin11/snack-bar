@@ -59,9 +59,18 @@ export interface RCJSON {
   noColor?: boolean
 }
 
+type fixtureName = string
+
 export interface ITargets {
-  [fixtureName: string]: {
-    fileName: string
-    testNames: string[]
+  fixtures: {
+    [fixtureName: string]: {
+      fileName: string
+      testNames: string[]
+    }
+  }
+  meta: {
+    [key: string]: {
+      [val: string]: fixtureName[]
+    }
   }
 }
