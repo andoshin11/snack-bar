@@ -1,6 +1,9 @@
 import { Selector } from 'testcafe';
 
-fixture('My fixture').page('https://devexpress.github.io/testcafe/example/')
+fixture('My fixture')
+  .meta('category', 'Hoge')
+  .meta('page', 'Sample')
+  .page('https://devexpress.github.io/testcafe/example/')
 
 test('My first test', async t => {
   await t
